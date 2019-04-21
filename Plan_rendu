@@ -1,0 +1,20 @@
+Il est demandé de donner un planning de paiement d'un prêt :
+
+- Pour un taux d'intérêt fixé et un remboursement constant du Capital ("Fixed principal payment")
+
+- Pour un taux d'intérêt flottant et un remboursement constant du Capital ("Fixed principal payment")
+
+- Pour un taux d'intérêt fixé et une échéance constante ("Instalment") 
+    - donc un remboursement du capital et de l'intérêt qui évoluent comme des suites géométriques inversement proportionnelles
+    - dans ce cas, on fixe 3 variables sur 4 (r ; PMT (principal payment) ; PV (present value = prêt initial) ; n (number of periods)).
+    - Il s'agit donc de trouver la quatrième par résolution puis de générer l'échéancier.
+    
+    
+ Remarques : 
+ L'utilisateur fournit toujours la fréquence du prêt (annuel, semestriel, trimestriel, mensuel) et le mois de départ du prêt.
+ 
+ Taux flottant : Ri = m + Bi où : m est une marge fixée et Bi une variable normale quelconque.
+ Pour simuler une variable normale en C++ ==> Box-Mueller algorithm.
+ 
+ 
+ 
