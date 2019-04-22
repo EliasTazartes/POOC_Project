@@ -22,3 +22,4 @@ int main()
   
   cout << "Welcome to Sorbank, a bank for and by Sorbonne students !" <<endl;
   cout << "This app is designed to generate with your help your loan payment schedule !";
+}
