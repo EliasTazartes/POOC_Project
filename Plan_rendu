@@ -16,5 +16,36 @@ Il est demandé de donner un planning de paiement d'un prêt :
  Taux flottant : Ri = m + Bi où : m est une marge fixée et Bi une variable normale quelconque.
  Pour simuler une variable normale en C++ ==> Box-Mueller algorithm.
  
+ Cas n°1 :
+ 
+ "Hi please enter fixed interest rate for the period as APR."
+ 
+ "Please enter the number of years of the loan"
+ 
+ "Please enter the periodicity (1 for annual, 2 for semi-annual, 4 for quarterly and 12 for monthly)."
+ 
+ On obtient ici le periodic r -> (r / périodicité)
+ 
+ "Enter the value of the loan"
+ 
+ "Enter the starting month in format MM/YYYY" (if hors du format, redemander, ou break)
+ 
+ \ Pour un échéancier avec des paiements du capital fixes et des paiements variables, il faut faire une boucle. \
+ Principal payment = PV / années x périodicité  <- fixé
+ Interest(i) = opening balance(i) x r <- calculé à chaque période
+ Instalment = interest(i) + principal <- calculé à chaque période
+ closing balance = opening balance - principal <- calculé à chaque période donc ces trois dernières font partie de la boucle for
+ 
+ Cas n° 2 :
+ 
+ Il faut entrer la PV, la périodicité, la longueur du prêt (ce qui nous donne le nombre de périodes).
+ Il faut entrer le taux flottant : la marge fixe et les paramètres du terme gaussien.
+ Il faut le simuler à chaque période via algo de Box-Mueller.
+ 
+ Indiquer le starting month MM/YYYY.
+ 
+ Ici encore, les principal sont fixés : PV / #périodes
+ Le floating rate doit être calculé à chaque période : r(i) = m + B(i) , B suit loi normal.
+ 
  
  
