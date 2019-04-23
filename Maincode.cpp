@@ -101,7 +101,8 @@ int main()
 	double principal, interestPayment, instalment;
 	double balance;
     int optionLoan; 
-    int optionRate;
+    int optionRate ;
+    int option_Fixed_Instal ; 
 
 
 	cout << "Welcome to Sorbank, a bank for and by Sorbonne students !" << endl;
@@ -110,6 +111,7 @@ int main()
 	cin >> APR;
 	APR = negative_Value (APR);
 	APR = APR / 100;
+
 	cout << "Please enter the duration of the loan (in years) ";
 	cin >> loanDuration;
 	loanDuration = negative_Value(loanDuration);
@@ -137,7 +139,7 @@ int main()
         cout << "If you want fixed interest rate, type 1" << endl;
         cout << "If you want floating rates, type 2" << endl;
         cin >> optionRate;
-        
+
         if (optionRate == 1) {
             principal = loanPV / periodNb;
             fixedPrincipal(loanPV, principal, periodicRate, periodNb);
@@ -148,7 +150,17 @@ int main()
         
     }
     if (optionLoan == 2) {
-        fixedInstalment(loanPV, periodicRate, periodNb);
+         cout << "You selected a fixed instalments loan." << endl;
+         cout << "What informations do you have ? Type the according number (1,2,3 or 4) "<< endl;
+         cout << "1. Presevent Value, fixed rate, number of years" << endl; 
+         cout << "2. Instalments, fixed rate, number of years" << endl; 
+         cout << "3. Presevent Value, Instalments, fixed rate" << endl; 
+         cout << "4. Presevent Value, Instalments, number of years" << endl; 
+         cin >> option_Fixed_Instal ;
+       	 if (option_Fixed_Instal == 1) {
+            fixedInstalment(loanPV, periodicRate, periodNb);
+         }
+        
     }
 
 	return 0;
