@@ -25,7 +25,6 @@ void fixedPrincipal (double loanPV, double principal, double rate, int period) {
 	for (int j = 0; j < period; j++)
 	{table[2][j] = rate;}
 
-
 	for (int j = 0; j < period; j++)
 	{table[3][j] = table[0][j] * rate;}
 
@@ -34,6 +33,45 @@ void fixedPrincipal (double loanPV, double principal, double rate, int period) {
 
 	for (int j = 0; j < period; j++)
 	{table[5][j] = table[0][j] - table[1][j];}
+
+	for (int i = 0; i < 6; i++)
+	{cout << " " << endl;
+		for (int j = 0; j < period; j++)
+		{cout << "  " << table[i][j] << "  ";}
+	}
+}
+
+void fixedInstalment (double loanPV, double rate, int period) {
+    
+    double instalment ; 
+
+    vector<vector<double> > table;
+	table.resize(6);
+	for (int i = 0; i < 6; i++) {
+		table[i].resize(period);
+	}
+
+	table[0][0] = loanPV;
+
+    instalment = loanPV * rate * (1 + (1/(pow(1+rate,period)-1))) ;
+
+	for (int j = 1; j < period; j++)
+	{table[0][j] = table[0][j - 1] - instalment + rate*table[0][j-1];}
+
+	for (int j = 0; j < period; j++)
+	{table[2][j] = rate;}
+
+    for (int j = 0; j < period; j++)
+	{table[1][j] = instalment - table[0][j]*rate ;}
+
+	for (int j = 0; j < period; j++)
+	{table[3][j] = table[0][j] * rate;}
+
+	for (int j = 0; j < period; j++)
+	{table[4][j] = instalment ;}
+
+	for (int j = 0; j < period; j++)
+	{table[5][j] = table[0][j] - instalment + table[3][j];}
 
 	for (int i = 0; i < 6; i++)
 	{cout << " " << endl;
@@ -97,7 +135,8 @@ int main()
 	cout << "Right ! So you have borrowed " << loanPV << " $, which you will repay over " << periodNb << " periods." << endl;
 	principal = loanPV / periodNb;
 
-    	fixedPrincipal(loanPV, principal, periodicRate, periodNb);
+    fixedPrincipal(loanPV, principal, periodicRate, periodNb);
+    fixedInstalment(loanPV, periodicRate, periodNb);
 
 	return 0;
 }
