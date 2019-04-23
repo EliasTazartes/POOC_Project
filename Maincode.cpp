@@ -7,6 +7,40 @@
 
 using namespace std;
 
+void fixedPrincipal (double loanPV, double principal, double rate, int period) {
+    
+    vector<vector<double> > table;
+	table.resize(6);
+	for (int i = 0; i < 6; i++) {
+		table[i].resize(period);
+	}
+
+	table[0][0] = loanPV;
+	for (int j = 1; j < period; j++)
+	{table[0][j] = table[0][j - 1] - principal;}
+
+    for (int j = 0; j < period; j++)
+	{table[1][j] = principal;}
+
+	for (int j = 0; j < period; j++)
+	{table[2][j] = rate;}
+
+
+	for (int j = 0; j < period; j++)
+	{table[3][j] = table[0][j] * rate;}
+
+	for (int j = 0; j < period; j++)
+	{table[4][j] = table[1][j] + table[3][j];}
+
+	for (int j = 0; j < period; j++)
+	{table[5][j] = table[0][j] - table[1][j];}
+
+	for (int i = 0; i < 6; i++)
+	{cout << " " << endl;
+		for (int j = 0; j < period; j++)
+		{cout << "  " << table[i][j] << "  ";}
+	}
+}
 
 int main()
 {
@@ -63,66 +97,7 @@ int main()
 	cout << "Right ! So you have borrowed " << loanPV << " $, which you will repay over " << periodNb << " periods." << endl;
 	principal = loanPV / periodNb;
 
+    	fixedPrincipal(loanPV, principal, periodicRate, periodNb);
 
-	// Defining the table
-
-	vector<vector<double>> table;
-	table.resize(6);
-	for (int i = 0; i < 6; i++) {
-		table[i].resize(periodNb);
-	}
-
-	// Generating the table;
-
-	// Opening Balance
-	table[0][0] = loanPV;
-	for (int j = 1; j < periodNb; j++)
-	{
-		table[0][j] = table[0][j - 1] - principal;
-	}
-
-	// Principal
-
-	for (int j = 0; j < periodNb; j++)
-	{
-		table[1][j] = principal;
-	}
-
-	// Periodic interest rate
-
-	for (int j = 0; j < periodNb; j++)
-	{
-		table[2][j] = periodicRate;
-	}
-
-	// Interest
-
-	for (int j = 0; j < periodNb; j++)
-	{
-		table[3][j] = table[0][j] * periodicRate;
-	}
-
-	// Instalment
-	for (int j = 0; j < periodNb; j++)
-	{
-		table[4][j] = table[1][j] + table[3][j];
-	}
-
-	// Closing Balance
-
-	for (int j = 0; j < periodNb; j++)
-	{
-		table[5][j] = table[0][j] - table[1][j];
-	}
-
-
-	for (int i = 0; i < 6; i++)
-	{
-		cout << " " << endl;
-		for (int j = 0; j < periodNb; j++)
-		{
-			cout << "  " << table[i][j] << "  ";
-		}
-	}
 	return 0;
 }
