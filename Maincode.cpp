@@ -6,21 +6,23 @@
 
 using namespace std;
 
+
 int main()
 {
 	string firstName, lastName;
-	int frequency;
-	int loanDuration;
-	int periodNb;
+	double frequency;
+	double loanDuration;
+	double periodNb;
 	double loanPV;
 	double APR;
 	double periodicRate;
 	double principal, interestPayment, instalment;
+	double balance;
 
 
 	cout << "Welcome to Sorbank, a bank for and by Sorbonne students !" << endl;
 	cout << "This app is designed to generate with your help your loan payment schedule !" << endl;
-	cout << "Please enter the fixed rate as Annual Percentage Rate (APR)" << endl;
+	cout << "Please enter the fixed rate as Annual Percentage Rate (APR) in %" << endl;
 	cin >> APR;
 	while (APR < 0)
 	{
@@ -59,7 +61,17 @@ int main()
 	}
 
 	cout << "Right ! So you have borrowed " << loanPV << " $, which you will repay over " << periodNb << " periods." << endl;
-
+	instalment = loanPV * APR * (1 + (1/(pow(1+APR,periodNb)-1))) ;
+		cout << "Okay ! Your paiments are " << instalment << " dollars per period" << endl;
+	
+	while (loanPV > 0.01) {
+		interestPayment = loanPV*APR ; 
+		cout << "Interest : " << interestPayment << endl; 
+		principal = instalment - interestPayment ; 
+		cout <<  "Principal : " << principal << endl;
+		loanPV = loanPV - principal ; 
+		cout <<  "Balance : " << loanPV << endl;
+	}
 
 	return 0;
 }
