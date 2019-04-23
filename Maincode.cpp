@@ -96,15 +96,65 @@ double presentValue (double instalment, double rate, double period) {
     return netPV;
 }
 
+double rate_input () {
+    double APR;
+    cout << "Please enter the fixed rate as Annual Percentage Rate (APR) in %" << endl;
+	cin >> APR;
+	APR = negative_Value (APR);
+	APR = APR / 100;
+    return APR; 
+}
+
+int duration_input () {
+    int loanDuration;
+    cout << "Please enter the duration of the loan (in years) ";
+	cin >> loanDuration;
+	loanDuration = negative_Value(loanDuration);
+    return loanDuration ; 
+}
+
+int frequency_input (int loanDuration) {
+    int frequency ; 
+    cout << "Please enter the frequency of payment for the loan" << endl;
+	cout << "1 for annually, 2 for semi-annually, 4 for quarterly, and 12 for monthly  ";
+	cin >> frequency;
+	frequency = negative_Value(frequency); 
+	const int periodNb = frequency * loanDuration;
+    return periodNb ;
+}
+
+double periodic_rate (double rate, int frequency) {
+    double periodicRate; 
+    periodicRate = rate / frequency;
+    return periodicRate ; 
+}
+
+double loan_value_input () {
+    double loanPV; 
+    cout << "Enter the value of your loan (in USD) " << endl;
+	cin >> loanPV;
+	loanPV = negative_Value(loanPV);
+    return loanPV;
+}
+
+double instal_value_input () {
+    double loanPV; 
+    cout << "Enter the value of your instalment (in USD) " << endl;
+	cin >> loanPV;
+	loanPV = negative_Value(loanPV);
+    return loanPV;
+}
+
 int main()
 {
 	string firstName, lastName;
-	double frequency;
+	int frequency;
 	int loanDuration;
 	double loanPV;
 	double APR;
 	double periodicRate;
 	double principal, interestPayment, instalment;
+    int periodNb; 
 	double balance;
     int optionLoan; 
     int optionRate ;
@@ -113,27 +163,6 @@ int main()
 
 	cout << "Welcome to Sorbank, a bank for and by Sorbonne students !" << endl;
 	cout << "This app is designed to generate with your help your loan payment schedule !" << endl;
-	cout << "Please enter the fixed rate as Annual Percentage Rate (APR) in %" << endl;
-	cin >> APR;
-	APR = negative_Value (APR);
-	APR = APR / 100;
-
-	cout << "Please enter the duration of the loan (in years) ";
-	cin >> loanDuration;
-	loanDuration = negative_Value(loanDuration);
-
-	cout << "Please enter the frequency of payment for the loan" << endl;
-	cout << "1 for annually, 2 for semi-annually, 4 for quarterly, and 12 for monthly  ";
-	cin >> frequency;
-	frequency = negative_Value(frequency); 
-	const int periodNb = frequency * loanDuration;
-	cout << "Okay ! Your loan will be rembursed over " << periodNb << " periods" << endl;
-
-	periodicRate = APR / frequency;
-
-	cout << "Enter the value of your loan (in USD) " << endl;
-	cin >> loanPV;
-	loanPV = negative_Value(loanPV);
 
     cout << "Please select the type of loan you want to have" << endl;
     cout << "For fixed principal type : 1" << endl;
@@ -147,6 +176,9 @@ int main()
         cin >> optionRate;
 
         if (optionRate == 1) {
+            loanPV = loan_value_input();
+            periodNb = frequency_input(duration_input());
+            periodicRate = periodic_rate(rate_input(), periodNb);
             principal = loanPV / periodNb;
             fixedPrincipal(loanPV, principal, periodicRate, periodNb);
         }
@@ -165,17 +197,18 @@ int main()
          cin >> option_Fixed_Instal ;
 
          if (option_Fixed_Instal == 1) {
+            loanPV = loan_value_input();
+            periodNb = frequency_input(duration_input());
+            periodicRate = periodic_rate(rate_input(), periodNb);
             fixedInstalment(loanPV, periodicRate, periodNb);
          }
 
          if (option_Fixed_Instal == 2) {
-             loanPV = presentValue(instalment, periodicRate, periodNb);
-             fixedInstalment(loanPV, periodicRate, periodNb)
-         }
-
-         if (option_Fixed_Instal == 3) {
-             periodNb = ln();
-             fixedInstalment(loanPV, periodicRate, periodNb)
+            instalment = instal_value_input();
+            periodNb = frequency_input(duration_input());
+            periodicRate = periodic_rate(rate_input(), periodNb);
+            loanPV = presentValue(instalment, periodicRate, periodNb);
+            fixedInstalment(loanPV, periodicRate, periodNb);
          }
         
     }
