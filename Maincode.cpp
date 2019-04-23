@@ -3,6 +3,7 @@
 #include <iomanip>
 #include <fstream>
 #include <string>
+#include <vector>
 
 using namespace std;
 
@@ -11,8 +12,7 @@ int main()
 {
 	string firstName, lastName;
 	double frequency;
-	double loanDuration;
-	double periodNb;
+	int loanDuration;
 	double loanPV;
 	double APR;
 	double periodicRate;
@@ -47,7 +47,7 @@ int main()
 		cout << "You have entered an incorrect frequency, please enter a correct one.  ";
 		cin >> frequency;
 	}
-	periodNb = frequency * loanDuration;
+	const int periodNb = frequency * loanDuration;
 	cout << "Okay ! Your loan will be rembursed over " << periodNb << " periods" << endl;
 
 	periodicRate = APR / frequency;
@@ -61,17 +61,68 @@ int main()
 	}
 
 	cout << "Right ! So you have borrowed " << loanPV << " $, which you will repay over " << periodNb << " periods." << endl;
-	instalment = loanPV * APR * (1 + (1/(pow(1+APR,periodNb)-1))) ;
-		cout << "Okay ! Your paiments are " << instalment << " dollars per period" << endl;
-	
-	while (loanPV > 0.01) {
-		interestPayment = loanPV*APR ; 
-		cout << "Interest : " << interestPayment << endl; 
-		principal = instalment - interestPayment ; 
-		cout <<  "Principal : " << principal << endl;
-		loanPV = loanPV - principal ; 
-		cout <<  "Balance : " << loanPV << endl;
+	principal = loanPV / periodNb;
+
+
+	// Defining the table
+
+	vector<vector<double>> table;
+	table.resize(6);
+	for (int i = 0; i < 6; i++) {
+		table[i].resize(periodNb);
 	}
 
+	// Generating the table;
+
+	// Opening Balance
+	table[0][0] = loanPV;
+	for (int j = 1; j < periodNb; j++)
+	{
+		table[0][j] = table[0][j - 1] - principal;
+	}
+
+	// Principal
+
+	for (int j = 0; j < periodNb; j++)
+	{
+		table[1][j] = principal;
+	}
+
+	// Periodic interest rate
+
+	for (int j = 0; j < periodNb; j++)
+	{
+		table[2][j] = periodicRate;
+	}
+
+	// Interest
+
+	for (int j = 0; j < periodNb; j++)
+	{
+		table[3][j] = table[0][j] * periodicRate;
+	}
+
+	// Instalment
+	for (int j = 0; j < periodNb; j++)
+	{
+		table[4][j] = table[1][j] + table[3][j];
+	}
+
+	// Closing Balance
+
+	for (int j = 0; j < periodNb; j++)
+	{
+		table[5][j] = table[0][j] - table[1][j];
+	}
+
+
+	for (int i = 0; i < 6; i++)
+	{
+		cout << " " << endl;
+		for (int j = 0; j < periodNb; j++)
+		{
+			cout << "  " << table[i][j] << "  ";
+		}
+	}
 	return 0;
 }
