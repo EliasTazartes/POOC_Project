@@ -90,6 +90,12 @@ void fixedInstalment (double loanPV, double rate, int period) {
 	}
 }
 
+double presentValue (double instalment, double rate, double period) {
+    double netPV ;
+    netPV = instalment/(rate*(1+(1/(pow(1+rate, period)-1))));
+    return netPV;
+}
+
 int main()
 {
 	string firstName, lastName;
@@ -157,8 +163,19 @@ int main()
          cout << "3. Presevent Value, Instalments, fixed rate" << endl; 
          cout << "4. Presevent Value, Instalments, number of years" << endl; 
          cin >> option_Fixed_Instal ;
-       	 if (option_Fixed_Instal == 1) {
+
+         if (option_Fixed_Instal == 1) {
             fixedInstalment(loanPV, periodicRate, periodNb);
+         }
+
+         if (option_Fixed_Instal == 2) {
+             loanPV = presentValue(instalment, periodicRate, periodNb);
+             fixedInstalment(loanPV, periodicRate, periodNb)
+         }
+
+         if (option_Fixed_Instal == 3) {
+             periodNb = ln();
+             fixedInstalment(loanPV, periodicRate, periodNb)
          }
         
     }
