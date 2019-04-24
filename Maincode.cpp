@@ -88,26 +88,37 @@ double period_number (double net_PV, double instalment, double rate) {
     return periodNb ; 
 }
 
-double dichotomy(double net_PV, double instalment, double periodNb) {
-	double rate;
-	double tampon;
-	double parameter;
-	double test_value;
-	tampon = instalment / net_PV;
-	rate = 1;
-	parameter = 1;
+double dichotomy (double net_PV, double instalment, double periodNb) {
+    double rate; 
+    double tampon ; 
+    double parameter ; 
+    double test_value ; 
+    double val_sup ; 
+    double val_min ;
+    val_sup = 1 ; 
+    val_min = 0 ;
+    rate = 0.5 ; 
+    parameter = 1; 
 
-	while (abs(parameter) > 0.01) {
-		if (parameter > 0) {
-			rate = (1 + rate) / 2;
-		}
-		if (parameter < 0) {
-			rate = (rate) / 2;
-		}
-		test_value = rate * (1 + (1 / (pow(1 + rate, periodNb) - 1)));
-		parameter = tampon - test_value;
-	}
-	return rate;
+    while (abs(parameter) > 0.00001) {
+        test_value = net_PV*rate*(1+(1/(pow(1+rate, periodNb)-1))); 
+        parameter = instalment - test_value ; 
+
+        if (parameter > 0 && abs(parameter) > 0.00001) {
+            cout << "test" << endl ;
+            val_min = rate ;
+            rate = (rate + val_sup)/2 ;
+            cout << rate <<endl;
+        }
+        if (parameter < 0 && abs(parameter) > 0.00001) {
+            val_sup = rate ;
+            rate = (val_min + rate)/2 ;
+            cout << rate <<endl;
+        }
+        
+    }
+    cout << rate <<endl;
+    return rate ; 
 }
 
 void fixedPrincipal (double loanPV, double principal, double rate, int period) {
@@ -269,7 +280,12 @@ int main()
          if (option_Fixed_Instal == 4) {
              loanPV = loan_value_input();
              instalment = instal_value_input();
-             periodicRate = 0 ;
+             duration = duration_input();
+             frequency = frequency_input();
+             periodNb = frequency*duration;
+             periodicRate = dichotomy(loanPV, instalment, periodNb);
+             fixedInstalment(loanPV, periodicRate, periodNb, instalment);
+             ;
          }
     }
    
