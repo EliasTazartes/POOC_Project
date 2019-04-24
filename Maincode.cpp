@@ -4,6 +4,8 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <stdlib.h>
+#include <math.h>
 
 using namespace std;
 
@@ -51,10 +53,7 @@ void fixedPrincipal (double loanPV, double principal, double rate, int period) {
 	}
 }
 
-void fixedInstalment (double loanPV, double rate, int period) {
-    
-    double instalment ; 
-
+void fixedInstalment (double loanPV, double rate, int period, double instalment) {
     vector<vector<double> > table;
 	table.resize(6);
 	for (int i = 0; i < 6; i++) {
@@ -63,8 +62,10 @@ void fixedInstalment (double loanPV, double rate, int period) {
 
 	table[0][0] = loanPV;
 
-    instalment = loanPV * rate * (1 + (1/(pow(1+rate,period)-1))) ;
-
+    if (instalment == 0) {
+        instalment = loanPV * rate * (1 + (1/(pow(1+rate,period)-1))) ;
+    }
+    
 	for (int j = 1; j < period; j++)
 	{table[0][j] = table[0][j - 1] - instalment + rate*table[0][j-1];}
 
@@ -145,6 +146,14 @@ double instal_value_input () {
     return loanPV;
 }
 
+double period_number (double net_PV, double instalment, double rate) {
+    double periodNb; 
+    double tampn ; 
+    tampn = log(pow(instalment/(rate*net_PV), -1)+1)/log(1+rate); 
+    periodNb = floor(tampn+0.5) ;
+    return periodNb ; 
+}
+
 int main()
 {
 	string firstName, lastName;
@@ -183,10 +192,9 @@ int main()
             fixedPrincipal(loanPV, principal, periodicRate, periodNb);
         }
         if (optionRate==2) {
-
-        }
-        
+        }   
     }
+
     if (optionLoan == 2) {
          cout << "You selected a fixed instalments loan." << endl;
          cout << "What informations do you have ? Type the according number (1,2,3 or 4) "<< endl;
@@ -200,7 +208,8 @@ int main()
             loanPV = loan_value_input();
             periodNb = frequency_input(duration_input());
             periodicRate = periodic_rate(rate_input(), periodNb);
-            fixedInstalment(loanPV, periodicRate, periodNb);
+            instalment = 0; 
+            fixedInstalment(loanPV, periodicRate, periodNb, instalment);
          }
 
          if (option_Fixed_Instal == 2) {
@@ -208,7 +217,26 @@ int main()
             periodNb = frequency_input(duration_input());
             periodicRate = periodic_rate(rate_input(), periodNb);
             loanPV = presentValue(instalment, periodicRate, periodNb);
-            fixedInstalment(loanPV, periodicRate, periodNb);
+            fixedInstalment(loanPV, periodicRate, periodNb, instalment);
+         }
+
+         if (option_Fixed_Instal == 3) {
+             double rateTpn ;
+             loanPV = loan_value_input();
+             instalment = instal_value_input();
+             rateTpn = rate_input();
+             periodNb = period_number(loanPV, instalment, rateTpn);
+             periodicRate = periodic_rate(rateTpn,periodNb);
+             fixedInstalment(loanPV, periodicRate, periodNb, instalment);
+         }
+
+         if (option_Fixed_Instal == 4) {
+             loanPV = loan_value_input();
+             instalment = instal_value_input();
+             periodNb = frequency_input(duration_input());
+             periodicRate = periodic_rate(rate_input(), periodNb);
+             periodicRate = 0 ;
+             
          }
         
     }
