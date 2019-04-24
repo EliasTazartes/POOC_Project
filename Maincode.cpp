@@ -73,18 +73,14 @@ double instal_value_input () {
     return loanPV;
 }
 
-double period_number (double net_PV, double instalment, double rate) {
-    double periodNb; 
-    double frequency ; 
+double period_number (double net_PV, double instalment, double rate, double frequency) {
+    double periodNb ; 
     double tampn ; 
     double period_rate ;
-    cout << "Please enter the frequency of payment for the loan" << endl;
-	cout << "1 for annually, 2 for semi-annually, 4 for quarterly, and 12 for monthly  ";
-	cin >> frequency;
-    frequency = negative_Value(frequency); 
     period_rate = rate/frequency ;
-    tampn = log(pow(instalment/(period_rate*net_PV), -1)+1)/log(1+period_rate); 
+    tampn = log(pow(instalment/(period_rate*net_PV) -1, -1)+1)/log(1+period_rate); 
     periodNb = floor(tampn+0.5) ;
+    cout << periodNb << endl; 
     return periodNb ; 
 }
 
@@ -272,7 +268,7 @@ int main()
              instalment = instal_value_input();
              rateTpn = rate_input();
              frequency = frequency_input();
-             periodNb = period_number(loanPV, instalment, rateTpn);
+             periodNb = period_number(loanPV, instalment, rateTpn, frequency);
              periodicRate = periodic_rate(rateTpn,frequency);
              fixedInstalment(loanPV, periodicRate, periodNb, instalment);
          }
