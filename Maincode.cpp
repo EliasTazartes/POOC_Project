@@ -22,6 +22,48 @@ double negative_Value(double number) {
 	return number;
 }
 
+int check_Frequency_Value(double number) {
+	while (number !=1 && number !=2 && number !=4 && number !=12)
+	{
+		cout << "You seem to have entered an inappropriate value" << endl;
+		cout << "Please enter the correct number.  " << endl;
+		cin >> number;
+	}
+	return number;
+}
+
+double verifiy_Double_Value () {
+	double value;
+	cin.clear();
+	while (1) {
+			if (cin >> value) {
+			break;
+			} 
+			else {
+				cout << "Invalid Input! Please input a proper value." << endl;
+				cin.clear();
+				while (cin.get() != '\n') ; 
+			}
+		}
+	return value;
+}
+
+double verifiy_Int_Value () {
+	int value;
+	cin.clear();
+	while (1) {
+			if (cin >> value) {
+			break;
+			} 
+			else {
+				cout << "Invalid Input! Please input a proper value." << endl;
+				cin.clear();
+				while (cin.get() != '\n') ; 
+			}
+		}
+	return value;
+}
+
 double presentValue(double instalment, double rate, double period) {
 	double netPV;
 	netPV = instalment / (rate * (1 + (1 / (pow(1 + rate, period) - 1))));
@@ -31,7 +73,7 @@ double presentValue(double instalment, double rate, double period) {
 double rate_input() {
 	double APR;
 	cout << "Please enter the fixed rate as Annual Percentage Rate (APR) in %" << endl;
-	cin >> APR;
+	APR = verifiy_Double_Value();
 	APR = negative_Value(APR);
 	APR = APR / 100;
 	return APR;
@@ -40,7 +82,7 @@ double rate_input() {
 int duration_input() {
 	int loanDuration;
 	cout << "Please enter the duration of the loan (in years) ";
-	cin >> loanDuration;
+	loanDuration = verifiy_Int_Value();
 	loanDuration = negative_Value(loanDuration);
 	return loanDuration;
 }
@@ -49,8 +91,8 @@ int frequency_input() {
 	int frequency;
 	cout << "Please enter the frequency of payment for the loan" << endl;
 	cout << "1 for annually, 2 for semi-annually, 4 for quarterly, and 12 for monthly  ";
-	cin >> frequency;
-	frequency = negative_Value(frequency);
+	frequency = verifiy_Int_Value();
+	frequency = check_Frequency_Value(frequency);
 	return frequency;
 }
 
@@ -63,17 +105,17 @@ double periodic_rate(double rate, int frequency) {
 double loan_value_input() {
 	double loanPV;
 	cout << "Enter the value of your loan (in USD) " << endl;
-	cin >> loanPV;
+	loanPV = verifiy_Double_Value();
 	loanPV = negative_Value(loanPV);
 	return loanPV;
 }
 
 double instal_value_input() {
-	double loanPV;
+	double value;
 	cout << "Enter the value of your instalment (in USD) " << endl;
-	cin >> loanPV;
-	loanPV = negative_Value(loanPV);
-	return loanPV;
+	value = verifiy_Double_Value();
+	value = negative_Value(value);
+	return value;
 }
 
 double period_number(double net_PV, double instalment, double rate, double frequency) {
@@ -195,7 +237,6 @@ double gaussianNoise(double mu, double sigma) {
 	static const double epsilon = std::numeric_limits<double>::min();
 	static const double two_pi = 2.0 * 3.14159265358979323846;
 
-
 	double z1;
 	double u1, u2;
 	do
@@ -280,6 +321,36 @@ void floatRateFixedPrincipal(double loanPV, double principal, double rate, int p
 	cout << endl << "Thank you for your time, the .csv file has been successfully created." << endl;
 }
 
+int verifiy_Option_Loan () {
+	int option;
+	while (1) {
+			if (cin >> option && (option==1 or option ==2)) {
+			break;
+			} 
+			else {
+				cout << "Invalid Input! Please input a proper value." << endl;
+				cin.clear();
+				while (cin.get() != '\n') ; 
+			}
+		}
+	return option;
+}
+
+int verifiy_Option_Fixed_Instal () {
+	int option;
+	while (1) {
+			if (cin >> option && (option==1 or option ==2 or option ==3 or option ==4)) {
+			break;
+			} 
+			else {
+				cout << "Invalid Input! Please input a proper value." << endl;
+				cin.clear();
+				while (cin.get() != '\n') ; 
+			}
+		}
+	return option;
+}
+
 
 int main()
 {
@@ -291,13 +362,13 @@ int main()
 	cout << "Please select the type of loan you want to have" << endl;
 	cout << "For fixed principal type : 1" << endl;
 	cout << "For fixed instalments type : 2" << endl;
-	cin >> optionLoan;
+	optionLoan=verifiy_Option_Loan();
 
 	if (optionLoan == 1) {
 		cout << "You selected a fixed principal loan." << endl;
 		cout << "If you want fixed interest rate, type 1" << endl;
 		cout << "If you want floating rates, type 2" << endl;
-		cin >> optionRate;
+		optionRate =verifiy_Option_Loan();
 
 		if (optionRate == 1) {
 			loanPV = loan_value_input();
@@ -329,7 +400,7 @@ int main()
 		cout << "2. Instalments, fixed rate, number of years" << endl;
 		cout << "3. Presevent Value, Instalments, fixed rate" << endl;
 		cout << "4. Presevent Value, Instalments, number of years" << endl;
-		cin >> option_Fixed_Instal;
+		option_Fixed_Instal = verifiy_Option_Fixed_Instal() ;
 
 		if (option_Fixed_Instal == 1) {
 			loanPV = loan_value_input();
