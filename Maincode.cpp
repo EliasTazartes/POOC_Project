@@ -45,6 +45,7 @@ double verifiy_Double_Value () {
 				while (cin.get() != '\n') ; 
 			}
 		}
+	value = negative_Value(value);	
 	return value;
 }
 
@@ -61,6 +62,7 @@ double verifiy_Int_Value () {
 				while (cin.get() != '\n') ; 
 			}
 		}
+	value = negative_Value(value);
 	return value;
 }
 
@@ -73,9 +75,7 @@ double presentValue(double instalment, double rate, double period) {
 double rate_input() {
 	double APR;
 	cout << "Please enter the fixed rate as Annual Percentage Rate (APR) in %" << endl;
-	APR = verifiy_Double_Value();
-	APR = negative_Value(APR);
-	APR = APR / 100;
+	APR = verifiy_Double_Value()/100;
 	return APR;
 }
 
@@ -83,7 +83,6 @@ int duration_input() {
 	int loanDuration;
 	cout << "Please enter the duration of the loan (in years) ";
 	loanDuration = verifiy_Int_Value();
-	loanDuration = negative_Value(loanDuration);
 	return loanDuration;
 }
 
@@ -106,7 +105,6 @@ double loan_value_input() {
 	double loanPV;
 	cout << "Enter the value of your loan (in USD) " << endl;
 	loanPV = verifiy_Double_Value();
-	loanPV = negative_Value(loanPV);
 	return loanPV;
 }
 
@@ -114,7 +112,6 @@ double instal_value_input() {
 	double value;
 	cout << "Enter the value of your instalment (in USD) " << endl;
 	value = verifiy_Double_Value();
-	value = negative_Value(value);
 	return value;
 }
 
@@ -236,7 +233,6 @@ double gaussianNoise(double mu, double sigma) {
 
 	static const double epsilon = std::numeric_limits<double>::min();
 	static const double two_pi = 2.0 * 3.14159265358979323846;
-
 	double z1;
 	double u1, u2;
 	do
@@ -273,7 +269,6 @@ double getstd() {
 }
 
 void floatRateFixedPrincipal(double loanPV, double principal, double rate, int period, int frequency, double mu, double sigma) {
-
 	double noise;
 	srand(time(NULL));
 	vector<vector<double> > table;
