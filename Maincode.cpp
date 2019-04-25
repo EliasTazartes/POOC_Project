@@ -102,19 +102,14 @@ double dichotomy (double net_PV, double instalment, double periodNb) {
         parameter = instalment - test_value ; 
 
         if (parameter > 0 && abs(parameter) > 0.00001) {
-            cout << "test" << endl ;
             val_min = rate ;
             rate = (rate + val_sup)/2 ;
-            cout << rate <<endl;
         }
         if (parameter < 0 && abs(parameter) > 0.00001) {
             val_sup = rate ;
             rate = (val_min + rate)/2 ;
-            cout << rate <<endl;
         }
-        
     }
-    cout << rate <<endl;
     return rate ; 
 }
 
@@ -158,14 +153,13 @@ int amortization_table_fixed_instal (double loanPV, double rate, int period, dou
 	for (int i = 0; i < 8; i++) {
 		table[i].resize(period);
 	}
-
 	table[1][0] = loanPV;
 
     if (instalment == 0) {
         instalment = loanPV * rate * (1 + (1/(pow(1+rate,period)-1))) ;
     }
     
-    for (int j = 1; j < period; j++)
+    for (int j = 0; j < period; j++)
 	{table[0][j] = j+1;}
 
 	for (int j = 1; j < period; j++)
@@ -189,49 +183,37 @@ int amortization_table_fixed_instal (double loanPV, double rate, int period, dou
     for (int j = 1; j < period; j++)
 	{table[7][j] = table[1][j - 1] - instalment + rate*table[1][j-1];}
 
-	for (int i = 0; i < 7; i++)
-	{cout << " " << endl;
-		for (int j = 0; j < period; j++)
-		{cout << "  " << table[i][j] << "  ";}
-	}
-      
-      int i =0;
-      std::ofstream myfile;
-      myfile.open ("amortization_table3.csv");
-      myfile << "# ; opening balance ; principal ; interest rate ; interest ; instalment ; closing balance\n";
-      myfile << "i ; PV (i-1) ; P i ; R i ; Int i ; PMT i ; PV i \n";
-      for (int j=0; j<period ; j++) {
-          for (int i=0; i<7; i++) {
-            myfile << table[i][j] ;
-            myfile << ";" ;
+    std::ofstream myfile;
+    myfile.open ("amortization_table3.csv");
+    myfile << "# ; opening balance ; principal ; interest rate ; interest ; instalment ; closing balance\n";
+    myfile << "i ; PV (i-1) ; P i ; R i ; Int i ; PMT i ; PV i \n";
+    for (int j=0; j<period ; j++) {
+      for (int i=0; i<7; i++) { 
+          myfile << table[i][j] ;
+          myfile << ";" ;
           }
-          myfile << "\n" ;
-      }
-      myfile.close();
-      cout << "done" << endl;
-      return 0;
+        myfile << "\n" ;
+    }
+    myfile.close();
+    cout << "done" << endl;
+    return 0;
 } 
 
 int main()
 {
-	string firstName, lastName;
 	int frequency;
-	int loanDuration;
 	double loanPV;
 	double APR;
 	double periodicRate;
-	double principal, interestPayment, instalment;
+	double principal, instalment;
     int periodNb; 
-	double balance;
     int optionLoan; 
     int optionRate ;
     int option_Fixed_Instal ;
     double duration ;  
-
-    cout << periodicRate ; 
+ 
     cout << "Welcome to Sorbank, a bank for and by Sorbonne students !" << endl;
 	cout << "This app is designed to generate with your help your loan payment schedule !" << endl;
-
     cout << "Please select the type of loan you want to have" << endl;
     cout << "For fixed principal type : 1" << endl;
     cout << "For fixed instalments type : 2" << endl;
