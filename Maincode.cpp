@@ -7,6 +7,8 @@
 #include <stdlib.h>
 #include <math.h>
 #include <fstream>
+#include <limits>
+#include <cstdlib>
 
 using namespace std;
 
@@ -86,10 +88,10 @@ double period_number(double net_PV, double instalment, double rate, double frequ
 }
 
 double dichotomy(double net_PV, double instalment, double periodNb) {
-	double rate =0.5;
-	double parameter =1;
+	double rate = 0.5;
+	double parameter = 1;
 	double test_value;
-	double val_sup =1, val_min=0;
+	double val_sup = 1, val_min = 0;
 
 
 	while (abs(parameter) > 0.00001) {
@@ -118,20 +120,20 @@ void fixedPrincipal(double loanPV, double principal, double rate, int period) {
 
 	table[1][0] = loanPV;
 
-	for (int j = 1; j < period; j++){
+	for (int j = 1; j < period; j++) {
 		table[1][j] = table[1][j - 1] - principal;
 	}
 
-	for (int j = 0; j < period; j++){
+	for (int j = 0; j < period; j++) {
 		table[0][j] = j + 1;
-        table[2][j] = principal;
-		table[3][j] = rate*100;
+		table[2][j] = principal;
+		table[3][j] = rate * 100;
 		table[4][j] = table[1][j] * rate;
 		table[5][j] = table[2][j] + table[4][j];
 		table[6][j] = table[1][j] - table[2][j];
 	}
 	std::ofstream myfile;
-	myfile.open("amortization_table.csv");
+	myfile.open("amortization_table1.csv");
 	myfile << "# ; Opening Balance ; Principal ; Interest Rate ; Interest ; Instalment ; Closing Balance\n";
 	myfile << "i ; PV (i-1) ; P i ; R i ; Int i ; PMT i ; PV i \n";
 	for (int j = 0; j < period; j++) {
@@ -158,13 +160,13 @@ int amortization_table_fixed_instal(double loanPV, double rate, int period, doub
 	}
 
 
-	for (int j = 1; j < period; j++){
+	for (int j = 1; j < period; j++) {
 		table[1][j] = table[1][j - 1] - instalment + rate * table[1][j - 1];
 	}
 
-	for (int j = 0; j < period; j++){
+	for (int j = 0; j < period; j++) {
 		table[0][j] = j + 1;
-        table[3][j] = rate * 100;
+		table[3][j] = rate * 100;
 		table[2][j] = instalment - table[1][j] * rate;
 		table[4][j] = table[1][j] * rate;
 		table[5][j] = instalment;
@@ -173,7 +175,7 @@ int amortization_table_fixed_instal(double loanPV, double rate, int period, doub
 	}
 
 	std::ofstream myfile;
-	myfile.open("amortization_table.csv");
+	myfile.open("amortization_table3.csv");
 	myfile << "# ; opening balance ; principal ; interest rate ; interest ; instalment ; closing balance\n";
 	myfile << "i ; PV (i-1) ; P i ; R i ; Int i ; PMT i ; PV i \n";
 	for (int j = 0; j < period; j++) {
@@ -188,9 +190,100 @@ int amortization_table_fixed_instal(double loanPV, double rate, int period, doub
 	return 0;
 }
 
+double gaussianNoise(double mu, double sigma) {
+
+	static const double epsilon = std::numeric_limits<double>::min();
+	static const double two_pi = 2.0 * 3.14159265358979323846;
+
+
+	double z1;
+	double u1, u2;
+	do
+	{
+		u1 = rand() * (1.0 / RAND_MAX);
+		u2 = rand() * (1.0 / RAND_MAX);
+	} while (u1 <= epsilon && u2 <= epsilon);
+
+	z1 = sqrt(-2.0 * log(u1)) * sin(two_pi * u2);
+	return (z1 * sigma + mu);
+}
+
+double floatmargin_input() {
+	double margin;
+	cout << "Please first enter the floating rate's  fixed margin M expressed in Annual Percentage Rate (APR) in %." << endl;
+	cin >> margin;
+	margin = negative_Value(margin);
+	margin = margin / 100;
+	return margin;
+}
+
+double getmean() {
+	double mu;
+	cout << "Please enter the mean of the floating part expressed as a APR in %" << endl;
+	cin >> mu;
+	return mu;
+}
+
+double getstd() {
+	double sigma;
+	cout << "Please enter the standard deviation of the floating part expressed in terms of a rate's standard deviation (%)" << endl;
+	cin >> sigma;
+	return sigma;
+}
+
+void floatRateFixedPrincipal(double loanPV, double principal, double rate, int period, int frequency, double mu, double sigma) {
+
+	double noise;
+	srand(time(NULL));
+	vector<vector<double> > table;
+	table.resize(8);
+
+	for (int i = 0; i < 8; i++) {
+		table[i].resize(period);
+	}
+
+	table[1][0] = loanPV;
+
+	for (int j = 1; j < period; j++) {
+		table[1][j] = table[1][j - 1] - principal;
+	}
+
+	for (int j = 0; j < period; j++) {
+
+		noise = gaussianNoise(mu, sigma) / 100;
+		table[0][j] = j + 1;
+		table[2][j] = principal;
+		table[3][j] = noise * 100;
+		table[4][j] = ((noise + rate) / frequency) * 100;
+		table[5][j] = table[1][j] * ((rate + noise) / frequency);
+		table[6][j] = table[2][j] + table[4][j];
+		table[7][j] = table[1][j] - table[2][j];
+	}
+	std::ofstream myfile;
+	myfile.open("amortization_table2.csv");
+	myfile << "input: ; PV ;" << loanPV << "\n";
+	myfile << " ; frequency (#payments per year); " << frequency << "\n";
+	myfile << " ; # of periods ; " << period << "\n";
+	myfile << " ; margin (%) ; " << rate * 100 << "\n";
+	myfile << " ; floating rate mean (%) ; " << mu << "\n";
+	myfile << " ; floating rate std ; " << sigma << "\n" << "\n" << "\n";
+
+	myfile << "# ; Opening Balance ; Principal ; Floating noise (%) ; Total periodic rate (%) ; Interest ; Instalment ; Closing Balance\n";
+	for (int j = 0; j < period; j++) {
+		for (int i = 0; i < 8; i++) {
+			myfile << table[i][j];
+			myfile << ";";
+		}
+		myfile << "\n";
+	}
+	myfile.close();
+	cout << endl << "Thank you for your time, the .csv file has been successfully created." << endl;
+}
+
+
 int main()
 {
-	double loanPV, APR, periodicRate, principal, instalment, duration;
+	double loanPV, APR, periodicRate, principal, instalment, duration, mu, sigma, noise, margin;
 	int frequency, periodNb, optionLoan, optionRate, option_Fixed_Instal;
 
 	cout << "Welcome to Sorbank, a bank for and by Sorbonne students !" << endl;
@@ -216,7 +309,16 @@ int main()
 			fixedPrincipal(loanPV, principal, periodicRate, periodNb);
 		}
 		if (optionRate == 2) {
-			//floating rate => algorithme de Box Muller
+			loanPV = loan_value_input();
+			duration = duration_input();
+			frequency = frequency_input();
+			periodNb = frequency * duration;
+			principal = loanPV / periodNb;
+			margin = floatmargin_input();
+			mu = getmean();
+			sigma = getstd();
+			floatRateFixedPrincipal(loanPV, principal, margin, periodNb, frequency, mu, sigma);
+
 		}
 	}
 
