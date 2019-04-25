@@ -6,6 +6,7 @@
 #include <vector>
 #include <stdlib.h>
 #include <math.h>
+#include <fstream>
 
 using namespace std;
 
@@ -151,43 +152,65 @@ void fixedPrincipal (double loanPV, double principal, double rate, int period) {
 	}
 }
 
-void fixedInstalment (double loanPV, double rate, int period, double instalment) {
+int amortization_table_fixed_instal (double loanPV, double rate, int period, double instalment){
     vector<vector<double> > table;
-	table.resize(6);
-	for (int i = 0; i < 6; i++) {
+	table.resize(8);
+	for (int i = 0; i < 8; i++) {
 		table[i].resize(period);
 	}
 
-	table[0][0] = loanPV;
+	table[1][0] = loanPV;
 
     if (instalment == 0) {
         instalment = loanPV * rate * (1 + (1/(pow(1+rate,period)-1))) ;
     }
     
+    for (int j = 1; j < period; j++)
+	{table[0][j] = j+1;}
+
 	for (int j = 1; j < period; j++)
-	{table[0][j] = table[0][j - 1] - instalment + rate*table[0][j-1];}
+	{table[1][j] = table[1][j - 1] - instalment + rate*table[1][j-1];}
 
 	for (int j = 0; j < period; j++)
-	{table[2][j] = rate;}
+	{table[3][j] = rate*100;}
 
     for (int j = 0; j < period; j++)
-	{table[1][j] = instalment - table[0][j]*rate ;}
+	{table[2][j] = instalment - table[1][j]*rate ;}
 
 	for (int j = 0; j < period; j++)
-	{table[3][j] = table[0][j] * rate;}
+	{table[4][j] = table[1][j] * rate;}
 
 	for (int j = 0; j < period; j++)
-	{table[4][j] = instalment ;}
+	{table[5][j] = instalment ;}
 
 	for (int j = 0; j < period; j++)
-	{table[5][j] = table[0][j] - instalment + table[3][j];}
+	{table[6][j] = table[1][j] - instalment + table[4][j];}
 
-	for (int i = 0; i < 6; i++)
+    for (int j = 1; j < period; j++)
+	{table[7][j] = table[1][j - 1] - instalment + rate*table[1][j-1];}
+
+	for (int i = 0; i < 7; i++)
 	{cout << " " << endl;
 		for (int j = 0; j < period; j++)
 		{cout << "  " << table[i][j] << "  ";}
 	}
-}
+      
+      int i =0;
+      std::ofstream myfile;
+      myfile.open ("amortization_table3.csv");
+      myfile << "# ; opening balance ; principal ; interest rate ; interest ; instalment ; closing balance\n";
+      myfile << "i ; PV (i-1) ; P i ; R i ; Int i ; PMT i ; PV i \n";
+      for (int j=0; j<period ; j++) {
+          for (int i=0; i<7; i++) {
+            myfile << table[i][j] ;
+            myfile << ";" ;
+          }
+          myfile << "\n" ;
+      }
+      myfile.close();
+      cout << "done" << endl;
+      return 0;
+} 
 
 int main()
 {
@@ -214,7 +237,7 @@ int main()
     cout << "For fixed instalments type : 2" << endl;
 	cin >> optionLoan;
 
-    if (optionLoan ==1 ){
+    if (optionLoan ==1){
         cout << "You selected a fixed principal loan." << endl;
         cout << "If you want fixed interest rate, type 1" << endl;
         cout << "If you want floating rates, type 2" << endl;
@@ -230,6 +253,7 @@ int main()
             fixedPrincipal(loanPV, principal, periodicRate, periodNb);
         }
         if (optionRate==2) {
+            //floating rate => algorithme de Box Muller
         }   
     }
 
@@ -249,7 +273,7 @@ int main()
             periodicRate = periodic_rate(rate_input(), frequency);
             instalment = 0; 
             periodNb = frequency*duration;
-            fixedInstalment(loanPV, periodicRate, periodNb, instalment);
+            amortization_table_fixed_instal(loanPV, periodicRate, periodNb, instalment);
          }
 
          if (option_Fixed_Instal == 2) {
@@ -259,7 +283,7 @@ int main()
             periodNb = frequency*duration;
             periodicRate = periodic_rate(rate_input(), frequency);
             loanPV = presentValue(instalment, periodicRate, periodNb);
-            fixedInstalment(loanPV, periodicRate, periodNb, instalment);
+            amortization_table_fixed_instal(loanPV, periodicRate, periodNb, instalment);
          }
 
          if (option_Fixed_Instal == 3) {
@@ -270,7 +294,7 @@ int main()
              frequency = frequency_input();
              periodNb = period_number(loanPV, instalment, rateTpn, frequency);
              periodicRate = periodic_rate(rateTpn,frequency);
-             fixedInstalment(loanPV, periodicRate, periodNb, instalment);
+             amortization_table_fixed_instal(loanPV, periodicRate, periodNb, instalment);
          }
 
          if (option_Fixed_Instal == 4) {
@@ -280,7 +304,7 @@ int main()
              frequency = frequency_input();
              periodNb = frequency*duration;
              periodicRate = dichotomy(loanPV, instalment, periodNb);
-             fixedInstalment(loanPV, periodicRate, periodNb, instalment);
+             amortization_table_fixed_instal(loanPV, periodicRate, periodNb, instalment);
              ;
          }
     }
