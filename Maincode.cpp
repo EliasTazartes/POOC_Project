@@ -129,7 +129,7 @@ void fixedPrincipal(double loanPV, double principal, double rate, int period) {
 	table[1][0] = loanPV;
 	for (int j = 1; j < period; j++)
 	{
-		table[1][j] = table[0][j - 1] - principal;
+		table[1][j] = table[1][j - 1] - principal;
 	}
 
 	for (int j = 0; j < period; j++)
@@ -178,7 +178,7 @@ void fixedPrincipal(double loanPV, double principal, double rate, int period) {
 		myfile << "\n";
 	}
 	myfile.close();
-	cout << "done" << endl;
+	cout << endl << "Thank you for your time, the .csv file has been successfully created." << endl;
 }
 
 int amortization_table_fixed_instal(double loanPV, double rate, int period, double instalment) {
