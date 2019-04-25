@@ -87,7 +87,6 @@ double period_number(double net_PV, double instalment, double rate, double frequ
 
 double dichotomy(double net_PV, double instalment, double periodNb) {
 	double rate;
-	double tampon;
 	double parameter;
 	double test_value;
 	double val_sup;
@@ -121,53 +120,22 @@ void fixedPrincipal(double loanPV, double principal, double rate, int period) {
 		table[i].resize(period);
 	}
 
-	for (int j = 0; j < period; j++)
-	{
-		table[0][j] = j + 1;
-	}
-
 	table[1][0] = loanPV;
-	for (int j = 1; j < period; j++)
-	{
+
+	for (int j = 1; j < period; j++){
 		table[1][j] = table[1][j - 1] - principal;
 	}
 
-	for (int j = 0; j < period; j++)
-	{
-		table[2][j] = principal;
-	}
-
-	for (int j = 0; j < period; j++)
-	{
-		table[3][j] = rate;
-	}
-
-	for (int j = 0; j < period; j++)
-	{
+	for (int j = 0; j < period; j++){
+		table[0][j] = j + 1;
+        table[2][j] = principal;
+		table[3][j] = rate*100;
 		table[4][j] = table[1][j] * rate;
-	}
-
-	for (int j = 0; j < period; j++)
-	{
 		table[5][j] = table[2][j] + table[4][j];
-	}
-
-	for (int j = 0; j < period; j++)
-	{
 		table[6][j] = table[1][j] - table[2][j];
 	}
-
-	for (int i = 0; i < 7; i++)
-	{
-		cout << " " << endl;
-		for (int j = 0; j < period; j++)
-		{
-			cout << "  " << table[i][j] << "  ";
-		}
-	}
-
 	std::ofstream myfile;
-	myfile.open("amortization_table1.csv");
+	myfile.open("amortization_table.csv");
 	myfile << "# ; Opening Balance ; Principal ; Interest Rate ; Interest ; Instalment ; Closing Balance\n";
 	myfile << "i ; PV (i-1) ; P i ; R i ; Int i ; PMT i ; PV i \n";
 	for (int j = 0; j < period; j++) {
@@ -193,48 +161,23 @@ int amortization_table_fixed_instal(double loanPV, double rate, int period, doub
 		instalment = loanPV * rate * (1 + (1 / (pow(1 + rate, period) - 1)));
 	}
 
-	for (int j = 0; j < period; j++)
-	{
-		table[0][j] = j + 1;
-	}
 
-	for (int j = 1; j < period; j++)
-	{
+	for (int j = 1; j < period; j++){
 		table[1][j] = table[1][j - 1] - instalment + rate * table[1][j - 1];
 	}
 
-	for (int j = 0; j < period; j++)
-	{
-		table[3][j] = rate * 100;
-	}
-
-	for (int j = 0; j < period; j++)
-	{
+	for (int j = 0; j < period; j++){
+		table[0][j] = j + 1;
+        table[3][j] = rate * 100;
 		table[2][j] = instalment - table[1][j] * rate;
-	}
-
-	for (int j = 0; j < period; j++)
-	{
 		table[4][j] = table[1][j] * rate;
-	}
-
-	for (int j = 0; j < period; j++)
-	{
 		table[5][j] = instalment;
-	}
-
-	for (int j = 0; j < period; j++)
-	{
 		table[6][j] = table[1][j] - instalment + table[4][j];
-	}
-
-	for (int j = 1; j < period; j++)
-	{
 		table[7][j] = table[1][j - 1] - instalment + rate * table[1][j - 1];
 	}
 
 	std::ofstream myfile;
-	myfile.open("amortization_table3.csv");
+	myfile.open("amortization_table.csv");
 	myfile << "# ; opening balance ; principal ; interest rate ; interest ; instalment ; closing balance\n";
 	myfile << "i ; PV (i-1) ; P i ; R i ; Int i ; PMT i ; PV i \n";
 	for (int j = 0; j < period; j++) {
@@ -340,7 +283,5 @@ int main()
 			;
 		}
 	}
-
-
 	return 0;
 }
