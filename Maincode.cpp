@@ -86,15 +86,11 @@ double period_number(double net_PV, double instalment, double rate, double frequ
 }
 
 double dichotomy(double net_PV, double instalment, double periodNb) {
-	double rate;
-	double parameter;
+	double rate =0.5;
+	double parameter =1;
 	double test_value;
-	double val_sup;
-	double val_min;
-	val_sup = 1;
-	val_min = 0;
-	rate = 0.5;
-	parameter = 1;
+	double val_sup =1, val_min=0;
+
 
 	while (abs(parameter) > 0.00001) {
 		test_value = net_PV * rate * (1 + (1 / (pow(1 + rate, periodNb) - 1)));
@@ -194,16 +190,8 @@ int amortization_table_fixed_instal(double loanPV, double rate, int period, doub
 
 int main()
 {
-	int frequency;
-	double loanPV;
-	double APR;
-	double periodicRate;
-	double principal, instalment;
-	int periodNb;
-	int optionLoan;
-	int optionRate;
-	int option_Fixed_Instal;
-	double duration;
+	double loanPV, APR, periodicRate, principal, instalment, duration;
+	int frequency, periodNb, optionLoan, optionRate, option_Fixed_Instal;
 
 	cout << "Welcome to Sorbank, a bank for and by Sorbonne students !" << endl;
 	cout << "This app is designed to generate with your help your loan payment schedule !" << endl;
@@ -280,7 +268,6 @@ int main()
 			periodNb = frequency * duration;
 			periodicRate = dichotomy(loanPV, instalment, periodNb);
 			amortization_table_fixed_instal(loanPV, periodicRate, periodNb, instalment);
-			;
 		}
 	}
 	return 0;
