@@ -177,7 +177,7 @@ void fixedPrincipal(double loanPV, double principal, double rate, int period) {
 	myfile << "i ; PV (i-1) ; P i ; R i ; Int i ; PMT i ; PV i \n";
 	for (int j = 0; j < period; j++) {
 		for (int i = 0; i < 7; i++) {
-			myfile << table[i][j];
+			myfile << (floor(table[i][j] * 100) / 100);
 			myfile << ";";
 		}
 		myfile << "\n";
@@ -219,7 +219,7 @@ int amortization_table_fixed_instal(double loanPV, double rate, int period, doub
 	myfile << "i ; PV (i-1) ; P i ; R i ; Int i ; PMT i ; PV i \n";
 	for (int j = 0; j < period; j++) {
 		for (int i = 0; i < 7; i++) {
-			myfile << table[i][j];
+			myfile << (floor(table[i][j] * 100) / 100);
 			myfile << ";";
 		}
 		myfile << "\n";
@@ -304,10 +304,10 @@ void floatRateFixedPrincipal(double loanPV, double principal, double rate, int p
 	myfile << " ; floating rate mean (%) ; " << mu << "\n";
 	myfile << " ; floating rate std ; " << sigma << "\n" << "\n" << "\n";
 
-	myfile << "# ; Opening Balance ; Principal ; Floating noise (%) ; Total periodic rate (%) ; Interest ; Instalment ; Closing Balance\n";
+	myfile << "# ; Opening Balance ; Principal ; Floating noise (%) ; Periodic rate (%) ; Interest ; Instalment ; Closing Balance\n";
 	for (int j = 0; j < period; j++) {
 		for (int i = 0; i < 8; i++) {
-			myfile << table[i][j];
+			myfile << (floor(table[i][j] * 100) / 100);
 			myfile << ";";
 		}
 		myfile << "\n";
