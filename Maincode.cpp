@@ -1,3 +1,4 @@
+
 #include <iostream>
 #include <cmath>
 #include <iomanip>
@@ -173,11 +174,16 @@ void fixedPrincipal(double loanPV, double principal, double rate, int period) {
 	}
 	std::ofstream myfile;
 	myfile.open("amortization_table1.csv");
+	myfile << "input: ; PV ;" << loanPV << "\n";
+	myfile << " ; principal ; " << principal << "\n";
+	myfile << " ; # of periods ; " << period << "\n";
+	myfile << " ; rate (%) ; " << rate * 100 << "\n" << "\n" << "\n";
+
 	myfile << "# ; Opening Balance ; Principal ; Interest Rate ; Interest ; Instalment ; Closing Balance\n";
 	myfile << "i ; PV (i-1) ; P i ; R i ; Int i ; PMT i ; PV i \n";
 	for (int j = 0; j < period; j++) {
 		for (int i = 0; i < 7; i++) {
-			myfile << (floor(table[i][j] * 100) / 100);
+			myfile << (floor(table[i][j] * 10000) / 10000);
 			myfile << ";";
 		}
 		myfile << "\n";
@@ -215,11 +221,15 @@ int amortization_table_fixed_instal(double loanPV, double rate, int period, doub
 
 	std::ofstream myfile;
 	myfile.open("amortization_table3.csv");
+	myfile << "input: ; PV ;" << loanPV << "\n";
+	myfile << " ; # of periods ; " << period << "\n";
+	myfile << " ; rate (%) ; " << rate * 100 << "\n" << "\n" << "\n";
+
 	myfile << "# ; opening balance ; principal ; interest rate ; interest ; instalment ; closing balance\n";
 	myfile << "i ; PV (i-1) ; P i ; R i ; Int i ; PMT i ; PV i \n";
 	for (int j = 0; j < period; j++) {
 		for (int i = 0; i < 7; i++) {
-			myfile << (floor(table[i][j] * 100) / 100);
+			myfile << (floor(table[i][j] * 10000) / 10000);
 			myfile << ";";
 		}
 		myfile << "\n";
@@ -248,8 +258,7 @@ double gaussianNoise(double mu, double sigma) {
 double floatmargin_input() {
 	double margin;
 	cout << "Please first enter the floating rate's  fixed margin M expressed in Annual Percentage Rate (APR) in %." << endl;
-	cin >> margin;
-	margin = negative_Value(margin);
+	margin = verifiy_Double_Value();
 	margin = margin / 100;
 	return margin;
 }
@@ -257,14 +266,14 @@ double floatmargin_input() {
 double getmean() {
 	double mu;
 	cout << "Please enter the mean of the floating part expressed as a APR in %" << endl;
-	cin >> mu;
+	mu = verifiy_Double_Value();
 	return mu;
 }
 
 double getstd() {
 	double sigma;
 	cout << "Please enter the standard deviation of the floating part expressed in terms of a rate's standard deviation (%)" << endl;
-	cin >> sigma;
+	sigma = verifiy_Double_Value();
 	return sigma;
 }
 
@@ -307,7 +316,7 @@ void floatRateFixedPrincipal(double loanPV, double principal, double rate, int p
 	myfile << "# ; Opening Balance ; Principal ; Floating noise (%) ; Periodic rate (%) ; Interest ; Instalment ; Closing Balance\n";
 	for (int j = 0; j < period; j++) {
 		for (int i = 0; i < 8; i++) {
-			myfile << (floor(table[i][j] * 100) / 100);
+			myfile << (floor(table[i][j] * 10000) / 10000);
 			myfile << ";";
 		}
 		myfile << "\n";
