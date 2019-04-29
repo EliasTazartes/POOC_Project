@@ -193,8 +193,8 @@ void fixedPrincipal(double loanPV, double principal, double rate, int period) {
 
 int amortization_table_fixed_instal(double loanPV, double rate, int period, double instalment) {
 	vector<vector<double> > table;
-	table.resize(8);
-	for (int i = 0; i < 8; i++) {
+	table.resize(7);
+	for (int i = 0; i < 7; i++) {
 		table[i].resize(period);
 	}
 	table[1][0] = loanPV;
@@ -215,16 +215,15 @@ int amortization_table_fixed_instal(double loanPV, double rate, int period, doub
 		table[4][j] = table[1][j] * rate;
 		table[5][j] = instalment;
 		table[6][j] = table[1][j] - instalment + table[4][j];
-		table[7][j] = table[1][j - 1] - instalment + rate * table[1][j - 1];
 	}
 
 	std::ofstream myfile;
 	myfile.open("amortization_table3.csv");
 	myfile << "input: ; PV ;" << loanPV << "\n";
 	myfile << " ; # of periods ; " << period << "\n";
-	myfile << " ; rate (%) ; " << rate * 100 << "\n" << "\n" << "\n";
+	myfile << " ; Periodic rate (%) ; " << rate * 100 << "\n" << "\n" << "\n";
 
-	myfile << "# ; Opening Balance ; Principal ; Interest rate (%) ; Interest ; Instalment ; Closing balance\n";
+	myfile << "Period no. ; Opening Balance ; Principal ; Interest rate (%) ; Interest ; Instalment ; Closing balance\n";
 	for (int j = 0; j < period; j++) {
 		for (int i = 0; i < 7; i++) {
 			myfile << (floor(table[i][j] * 10000) / 10000);
@@ -398,10 +397,10 @@ int main()
 	if (optionLoan == 2) {
 		cout << "You selected a fixed instalments loan." << endl;
 		cout << "What informations do you have ? Type the according number (1,2,3 or 4) " << endl;
-		cout << "1. Presevent Value, fixed rate, number of years" << endl;
+		cout << "1. Present Value, fixed rate, number of years" << endl;
 		cout << "2. Instalments, fixed rate, number of years" << endl;
-		cout << "3. Presevent Value, Instalments, fixed rate" << endl;
-		cout << "4. Presevent Value, Instalments, number of years" << endl;
+		cout << "3. Present Value, Instalments, fixed rate" << endl;
+		cout << "4. Present Value, Instalments, number of years" << endl;
 		option_Fixed_Instal = verifiy_Option_Fixed_Instal();
 
 		if (option_Fixed_Instal == 1) {
